@@ -1,0 +1,8 @@
+creation_rules:
+    - path_regex: .*/production/.*
+      kms: arn:aws:kms:eu-west-2:xxx:key/xxx
+
+    - path_regex: .*/integration/.*
+      kms: arn:aws:kms:eu-west-2:yyy:key/yyy
+
+    - kms: arn:aws:kms:eu-west-2:zzz:key/zzz

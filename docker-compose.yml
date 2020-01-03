@@ -1,0 +1,32 @@
+version: '3.5'
+services:
+    postgres:
+        image: postgres:9.6
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+    webserver:
+        build: .
+        restart: always
+        depends_on:
+            - postgres
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Local
+            - AIRFLOW_HOME=/usr/local/airflow
+            - AIRFLOW_PATH=/usr/local/airflow/dags
+            - FERNET_KEY=OGcEH00sDw8fgOZ3S21K1K0Xr8t1TPR5G_XdVt-9HHc=
+        volumes:
+            - ./dags:/usr/local/airflow/dags
+            - ./.aws.airflow.credentials:/usr/local/airflow/.aws/credentials
+            - ./plugins:/usr/local/airflow/plugins
+            - ./settings/local/:/usr/local/airflow/settings
+        ports:
+            - "1234:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
